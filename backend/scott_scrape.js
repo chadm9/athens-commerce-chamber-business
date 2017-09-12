@@ -15,7 +15,7 @@ casper.thenOpen('http://athensga.chambermaster.com/list', function () {
         //this.echo('alphanumeric links');
        // this.echo(alphanumericLinks);
 
-        for(var i = 0; i < alphanumericLinks.length; i++){
+        for(var i = 22; i < alphanumericLinks.length; i++){
 
             casper.thenOpen(alphanumericLinks[i], function () {
                 this.echo(this.getTitle());
@@ -27,7 +27,12 @@ casper.thenOpen('http://athensga.chambermaster.com/list', function () {
 
                         casper.thenOpen(businessDirectoryLinks[i], function () {
                             //this.echo(this.getHTML('h1[itemprop="name"]'));
-                            var businessName = this.getHTML('h1[itemprop="name"]');
+                            //var businessName = this.getHTML('h1[itemprop="name"]');
+			    if (this.exists('h1[itemprop="name"]')) {
+                                var businessName = this.getHTML('h1[itemprop="name"]')
+                            }else{
+                                var businessName = 'No Name Listed';
+                            }
                             if (this.exists('a[itemprop="url"]')) {
                                 var businessLink = this.getElementAttribute('a[itemprop="url"]', 'href')
                             }else{
@@ -63,14 +68,14 @@ casper.thenOpen('http://athensga.chambermaster.com/list', function () {
                             }else{
                                 var phone = 'No Phone Number Listed';
                             }
-                            console.log(businessName);
-                            console.log(category);
-                            console.log(businessLink);
-                            console.log(streetAddress);
-                            console.log(city);
-                            console.log(state);
-                            console.log(zipCode);
-                            console.log(phone);
+                            //console.log(businessName);
+                            //console.log(category);
+                            //console.log(businessLink);
+                            //console.log(streetAddress);
+                            //console.log(city);
+                            //console.log(state);
+                            //console.log(zipCode);
+                            //console.log(phone);
 
                             casper.thenOpen('http://localhost:4060/postBusinessData', {
 
@@ -88,7 +93,9 @@ casper.thenOpen('http://athensga.chambermaster.com/list', function () {
                             });
 
 
-
+			    this.clearCache();
+			    this.page.close();
+                            this.page = require('webpage').create();
                         });
 
 
@@ -101,7 +108,9 @@ casper.thenOpen('http://athensga.chambermaster.com/list', function () {
                 }else{
                     this.echo('Business Link Not Found')
                 }
-
+                this.clearCache();
+                this.page.close();
+                this.page = require('webpage').create();
             })
         }
     }else{
